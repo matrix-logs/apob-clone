@@ -221,6 +221,19 @@ if [ -f "/workspace/ComfyUI/models/diffusion_models/Wan2.2-I2V-A14B/models_t5_um
 fi
 
 # ============================================
+# Step 8: Copy Workflows
+# ============================================
+print_status "Copying workflows..."
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ -d "$SCRIPT_DIR/workflows" ]; then
+    cp -r "$SCRIPT_DIR/workflows/"*.json /workspace/ComfyUI/user/default/workflows/
+    print_status "Workflows copied to ComfyUI"
+else
+    print_warning "Workflows folder not found at $SCRIPT_DIR/workflows"
+    print_warning "Please manually copy workflows to /workspace/ComfyUI/user/default/workflows/"
+fi
+
+# ============================================
 # Complete
 # ============================================
 echo ""
