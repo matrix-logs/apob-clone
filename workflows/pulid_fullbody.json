@@ -1,6 +1,6 @@
 {
-  "last_node_id": 15,
-  "last_link_id": 16,
+  "last_node_id": 16,
+  "last_link_id": 17,
   "nodes": [
     {
       "id": 1,
@@ -81,7 +81,7 @@
     {
       "id": 7,
       "type": "LoadImage",
-      "pos": [450, 450],
+      "pos": [450, 500],
       "size": [315, 314],
       "flags": {},
       "order": 6,
@@ -91,8 +91,8 @@
         {"name": "MASK", "type": "MASK", "links": null}
       ],
       "properties": {},
-      "widgets_values": ["example.png", "image"],
-      "title": "Reference Face Image"
+      "widgets_values": ["face.png", "image"],
+      "title": "Reference Face (close-up)"
     },
     {
       "id": 8,
@@ -111,53 +111,54 @@
       ],
       "outputs": [{"name": "MODEL", "type": "MODEL", "links": [9], "slot_index": 0}],
       "properties": {},
-      "widgets_values": ["fidelity", 0.9, 0.0, 1.0],
-      "title": "Apply PuLID"
+      "widgets_values": ["fidelity", 0.85, 0.0, 1.0],
+      "title": "Apply PuLID (identity strength 0.85)"
     },
     {
       "id": 9,
       "type": "CLIPTextEncode",
       "pos": [850, 50],
-      "size": [400, 150],
+      "size": [450, 180],
       "flags": {},
       "order": 8,
       "mode": 0,
       "inputs": [{"name": "clip", "type": "CLIP", "link": 2}],
       "outputs": [{"name": "CONDITIONING", "type": "CONDITIONING", "links": [10], "slot_index": 0}],
       "properties": {},
-      "widgets_values": ["a woman standing on a beach at sunset, golden hour lighting, photorealistic, highly detailed"],
-      "title": "Positive Prompt"
+      "widgets_values": ["full body photo of a person standing confidently, arms relaxed at sides, neutral pose facing camera, professional studio lighting, clean background, high quality, photorealistic, 8k, sharp focus"],
+      "title": "Prompt (describe full body pose)"
     },
     {
       "id": 10,
       "type": "CLIPTextEncode",
-      "pos": [850, 250],
-      "size": [400, 100],
+      "pos": [850, 280],
+      "size": [450, 100],
       "flags": {},
       "order": 9,
       "mode": 0,
       "inputs": [{"name": "clip", "type": "CLIP", "link": 3}],
       "outputs": [{"name": "CONDITIONING", "type": "CONDITIONING", "links": [11], "slot_index": 0}],
       "properties": {},
-      "widgets_values": [""],
+      "widgets_values": ["blurry, distorted, extra limbs, bad anatomy, disfigured"],
       "title": "Negative Prompt"
     },
     {
       "id": 11,
       "type": "EmptySD3LatentImage",
-      "pos": [850, 400],
+      "pos": [850, 430],
       "size": [315, 106],
       "flags": {},
       "order": 10,
       "mode": 0,
       "outputs": [{"name": "LATENT", "type": "LATENT", "links": [12], "slot_index": 0}],
       "properties": {},
-      "widgets_values": [768, 1024, 1]
+      "widgets_values": [576, 1024, 1],
+      "title": "Image Size (9:16 for full body)"
     },
     {
       "id": 12,
       "type": "FluxGuidance",
-      "pos": [1300, 50],
+      "pos": [1350, 50],
       "size": [317, 58],
       "flags": {},
       "order": 11,
@@ -170,7 +171,7 @@
     {
       "id": 13,
       "type": "KSampler",
-      "pos": [1300, 150],
+      "pos": [1350, 150],
       "size": [315, 262],
       "flags": {},
       "order": 12,
@@ -183,12 +184,12 @@
       ],
       "outputs": [{"name": "LATENT", "type": "LATENT", "links": [14], "slot_index": 0}],
       "properties": {},
-      "widgets_values": [123456789, "randomize", 20, 1.0, "euler", "normal", 1.0]
+      "widgets_values": [123456789, "randomize", 25, 1.0, "euler", "normal", 1.0]
     },
     {
       "id": 14,
       "type": "VAEDecode",
-      "pos": [1680, 150],
+      "pos": [1730, 150],
       "size": [210, 46],
       "flags": {},
       "order": 13,
@@ -203,14 +204,15 @@
     {
       "id": 15,
       "type": "SaveImage",
-      "pos": [1680, 250],
+      "pos": [1730, 250],
       "size": [315, 270],
       "flags": {},
       "order": 14,
       "mode": 0,
       "inputs": [{"name": "images", "type": "IMAGE", "link": 15}],
       "properties": {},
-      "widgets_values": ["pulid_character"]
+      "widgets_values": ["pulid_fullbody"],
+      "title": "Save (use this in Wan 2.2)"
     }
   ],
   "links": [
