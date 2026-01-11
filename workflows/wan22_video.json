@@ -1,0 +1,42 @@
+{
+  "1": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "source.png"
+    }
+  },
+  "2": {
+    "class_type": "DownloadAndLoadWanModel",
+    "inputs": {
+      "model": "Wan-AI/Wan2.2-I2V-A14B-480P",
+      "base_precision": "bf16",
+      "quantization": "disabled"
+    }
+  },
+  "3": {
+    "class_type": "WanImageToVideo",
+    "inputs": {
+      "width": 832,
+      "height": 480,
+      "num_frames": 97,
+      "seed": -1,
+      "steps": 30,
+      "cfg": 5.0,
+      "shift": 7.0,
+      "model": ["2", 0],
+      "image": ["1", 0]
+    }
+  },
+  "4": {
+    "class_type": "VHS_VideoCombine",
+    "inputs": {
+      "frame_rate": 24,
+      "loop_count": 0,
+      "filename_prefix": "wan22_video",
+      "format": "video/h264-mp4",
+      "pingpong": false,
+      "save_output": true,
+      "images": ["3", 0]
+    }
+  }
+}

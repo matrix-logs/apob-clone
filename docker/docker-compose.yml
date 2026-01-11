@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  apob-clone:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: apob-clone:latest
+    container_name: apob-clone
+
+    # GPU access
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+    # Port mapping
+    ports:
+      - "8188:8188"  # ComfyUI
+      - "8000:8000"  # FastAPI
+
+    # Volumes for persistent storage
+    volumes:
+      # Model storage (mount your models here)
+      - ./models:/workspace/ComfyUI/models
+      # Output storage
+      - ./outputs:/workspace/outputs
+      # Input files
+      - ./inputs:/workspace/inputs
+      # Workflow customization
+      - ../workflows:/workspace/workflows
+
+    # Environment variables
+    environment:
+      - COMFYUI_HOST=127.0.0.1
+      - COMFYUI_PORT=8188
+      - OUTPUT_DIR=/workspace/outputs
+      - WORKFLOWS_DIR=/workspace/workflows
+      - NVIDIA_VISIBLE_DEVICES=all
+
+    # Keep container running
+    restart: unless-stopped
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Optional: Redis for job queue (production)
+  redis:
+    image: redis:7-alpine
+    container_name: apob-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    profiles:
+      - production
+
+volumes:
+  redis-data:
