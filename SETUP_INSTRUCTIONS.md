@@ -10,7 +10,8 @@
 | **LivePortrait** | `liveportrait_animate.json` | Face animation from driving video |
 | **ReActor Face Swap** | `reactor_faceswap.json` | Swap faces in images |
 | **ReActor Video** | `reactor_video_faceswap.json` | Swap faces in videos |
-| **Wan 2.2 Animate** | `wan22_animate_character.json` | Animate PuLID-generated characters |
+| **Wan 2.2 Animate** | `wan22_animate_faceswap.json` | Swap characters in videos using driving video motion |
+| **Wan 2.2 I2V** | `wan22_i2v_character.json` | Animate still images with AI-generated motion |
 
 ## Quick Reference
 
@@ -129,12 +130,37 @@ ssh -p 55622 root@69.176.92.113 "cd /workspace/ComfyUI && nohup python3 main.py 
 
 **Custom Node Source:** [ComfyUI-PuLID-Flux](https://github.com/balazik/ComfyUI-PuLID-Flux)
 
-### Image to Video (Wan 2.2)
-1. Load workflow or create new one using Wan nodes
+### Image to Video (Wan 2.2 I2V)
+1. Load `wan22_i2v_character.json`
 2. Upload source image
 3. Set duration (4-8 seconds)
 4. Set motion strength (0.3-0.7)
+5. Enter text prompt describing desired motion
+6. Queue the prompt
+
+### Character Swap (Wan 2.2 Animate)
+1. Load `wan22_animate_faceswap.json`
+2. Upload a **driving video** (performer whose motion you want to use)
+3. Upload a **reference character image** (face to swap in)
+4. Adjust settings:
+   - Resolution: 832x480 recommended
+   - Frame rate: 16 fps
 5. Queue the prompt
+
+**How it works:**
+- Extracts pose/skeleton from driving video using YOLOv10 + ViTPose
+- Segments the person using SAM2
+- Generates new character with reference face matching the poses
+- Optionally applies relight LoRA to match original lighting
+
+**Required models:**
+- `Wan2_2-Animate-14B_fp8_e4m3fn_scaled_KJ.safetensors`
+- `clip_vision_h.safetensors`
+- `yolov10m.onnx` (in `models/detection/`)
+- `vitpose-l-wholebody.onnx` (in `models/detection/`)
+- `sam2.1_hiera_base_plus.safetensors`
+
+See [VASTAI_SETUP.md](VASTAI_SETUP.md#wan-22-animate-vs-i2v) for more details.
 
 ### Talking Avatar (LivePortrait)
 1. Load `sadtalker_lipsync.json`
